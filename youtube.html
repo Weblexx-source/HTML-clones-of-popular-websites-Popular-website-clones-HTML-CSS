@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Roboto", Arial, sans-serif;
+            background: #0f0f0f;
+            color: #fff;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 16px;
+            height: 56px;
+            background: #0f0f0f;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .menu-icon {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .menu-icon:hover {
+            background: #272727;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+        }
+
+        .youtube-logo {
+            width: 90px;
+            height: 20px;
+            background: #ff0000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 18px;
+            letter-spacing: -1px;
+        }
+
+        .header-center {
+            flex: 1;
+            max-width: 640px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 0 40px;
+        }
+
+        .search-box {
+            flex: 1;
+            display: flex;
+        }
+
+        .search-input {
+            flex: 1;
+            height: 40px;
+            padding: 0 16px;
+            background: #121212;
+            border: 1px solid #303030;
+            border-radius: 40px 0 0 40px;
+            color: #fff;
+            font-size: 16px;
+            outline: none;
+        }
+
+        .search-input::placeholder {
+            color: #888;
+        }
+
+        .search-button {
+            width: 64px;
+            height: 40px;
+            background: #222;
+            border: 1px solid #303030;
+            border-left: none;
+            border-radius: 0 40px 40px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .search-button:hover {
+            background: #2a2a2a;
+        }
+
+        .voice-search {
+            width: 40px;
+            height: 40px;
+            background: #181818;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .voice-search:hover {
+            background: #2a2a2a;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .header-icon {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .header-icon:hover {
+            background: #272727;
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            background: #cc0000;
+            color: #fff;
+            font-size: 10px;
+            padding: 2px 5px;
+            border-radius: 10px;
+            font-weight: bold;
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #065fd4;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        /* Main Layout */
+        .main-container {
+            display: flex;
+            margin-top: 56px;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 240px;
+            background: #0f0f0f;
+            height: calc(100vh - 56px);
+            overflow-y: auto;
+            position: fixed;
+            left: 0;
+            padding: 12px 0;
+        }
+
+        .sidebar::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .sidebar::-webkit-scrollbar-thumb {
+            background: #717171;
+            border-radius: 4px;
+        }
+
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            padding: 0 24px;
+            height: 40px;
+            cursor: pointer;
+            gap: 24px;
+            font-size: 14px;
+        }
+
+        .sidebar-item:hover {
+            background: #272727;
+        }
+
+        .sidebar-item.active {
+            background: #272727;
+        }
+
+        .sidebar-item i {
+            width: 24px;
+            font-size: 20px;
+        }
+
+        .sidebar-section {
+            padding: 12px 0;
+            border-bottom: 1px solid #303030;
+        }
+
+        .sidebar-title {
+            padding: 8px 24px;
+            font-size: 14px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+        }
+
+        .sidebar-title:hover {
+            background: #272727;
+        }
+
+        .subscription-item {
+            display: flex;
+            align-items: center;
+            padding: 0 24px;
+            height: 40px;
+            cursor: pointer;
+            gap: 16px;
+            font-size: 14px;
+        }
+
+        .subscription-item:hover {
+            background: #272727;
+        }
+
+        .subscription-avatar {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .live-badge {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #cc0000;
+            margin-left: auto;
+        }
+
+        /* Content */
+        .content {
+            margin-left: 240px;
+            flex: 1;
+            padding: 24px 24px;
+        }
+
+        /* Category Pills */
+        .category-pills {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 24px;
+            overflow-x: auto;
+            padding-bottom: 4px;
+        }
+
+        .category-pills::-webkit-scrollbar {
+            height: 0;
+        }
+
+        .pill {
+            padding: 8px 16px;
+            background: #272727;
+            border-radius: 8px;
+            white-space: nowrap;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .pill:hover {
+            background: #3f3f3f;
+        }
+
+        .pill.active {
+            background: #f1f1f1;
+            color: #0f0f0f;
+        }
+
+        /* Video Grid */
+        .video-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+            gap: 16px;
+        }
+
+        .video-card {
+            cursor: pointer;
+        }
+
+        .video-thumbnail {
+            width: 100%;
+            aspect-ratio: 16/9;
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+            background: #181818;
+        }
+
+        .video-thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .video-duration {
+            position: absolute;
+            bottom: 8px;
+            right: 8px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 3px 6px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .live-indicator {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            background: #cc0000;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .video-info {
+            display: flex;
+            gap: 12px;
+            margin-top: 12px;
+        }
+
+        .channel-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            flex-shrink: 0;
+        }
+
+        .video-details {
+            flex: 1;
+        }
+
+        .video-title {
+            font-size: 14px;
+            font-weight: 500;
+            line-height: 1.4;
+            margin-bottom: 4px;
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
+
+        .video-channel {
+            font-size: 12px;
+            color: #aaa;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .verified-badge {
+            font-size: 12px;
+        }
+
+        .video-meta {
+            font-size: 12px;
+            color: #aaa;
+        }
+
+        .video-menu {
+            margin-left: auto;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .video-card:hover .video-menu {
+            opacity: 1;
+        }
+
+        @media (max-width: 1024px) {
+            .video-grid {
+                grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .content {
+                margin-left: 0;
+            }
+
+            .video-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="header-left">
+            <div class="menu-icon">
+                <i class="fas fa-bars"></i>
+            </div>
+            <div class="logo">
+                <div class="youtube-logo">
+                    <i class="fab fa-youtube" style="color: white;"></i>
+                </div>
+                <span style="font-size: 10px; vertical-align: super;">RU</span>
+            </div>
+        </div>
+        <div class="header-center">
+            <div class="search-box">
+                <input type="text" class="search-input" placeholder="Введите запрос">
+                <div class="search-button">
+                    <i class="fas fa-search"></i>
+                </div>
+            </div>
+            <div class="voice-search">
+                <i class="fas fa-microphone"></i>
+            </div>
+        </div>
+        <div class="header-right">
+            <div class="header-icon">
+                <i class="fas fa-plus"></i>
+            </div>
+            <div class="header-icon">
+                <i class="fas fa-bell"></i>
+                <span class="notification-badge">99</span>
+            </div>
+            <div class="user-avatar">
+                <i class="fas fa-user"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="main-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-section">
+                <div class="sidebar-item active">
+                    <i class="fas fa-home"></i>
+                    <span>Главная</span>
+                </div>
+                <div class="sidebar-item">
+                    <i class="fas fa-play"></i>
+                    <span>Shorts</span>
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="sidebar-title">
+                    <span>Подписки</span>
+                    <i class="fas fa-chevron-right" style="font-size: 12px;"></i>
+                </div>
+                <div class="subscription-item">
+                    <div class="subscription-avatar"></div>
+                    <span>Lofi Girl</span>
+                    <div class="live-badge"></div>
+                </div>
+                <div class="subscription-item">
+                    <div class="subscription-avatar" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);"></div>
+                    <span>Оверкомер</span>
+                </div>
+                <div class="subscription-item">
+                    <div class="subscription-avatar" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);"></div>
+                    <span>kriper2004</span>
+                </div>
+                <div class="subscription-item">
+                    <div class="subscription-avatar" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);"></div>
+                    <span>X-Finds</span>
+                </div>
+                <div class="subscription-item">
+                    <div class="subscription-avatar" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);"></div>
+                    <span>МДРЕГИОН TV</span>
+                </div>
+                <div class="subscription-item">
+                    <div class="subscription-avatar" style="background: linear-gradient(135deg, #30cfd0 0%, #330867 100%);"></div>
+                    <span>BORGE HOKAGE</span>
+                </div>
+                <div class="subscription-item">
+                    <div class="subscription-avatar" style="background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);"></div>
+                    <span>The Tonight Sho...</span>
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="sidebar-title">
+                    <span>Развернуть</span>
+                    <i class="fas fa-chevron-down" style="font-size: 12px;"></i>
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="sidebar-title" style="padding-top: 0;">
+                    <span>Вы</span>
+                    <i class="fas fa-chevron-right" style="font-size: 12px;"></i>
+                </div>
+                <div class="sidebar-item">
+                    <i class="fas fa-history"></i>
+                    <span>История</span>
+                </div>
+                <div class="sidebar-item">
+                    <i class="fas fa-list"></i>
+                    <span>Плейлисты</span>
+                </div>
+                <div class="sidebar-item">
+                    <i class="fas fa-clock"></i>
+                    <span>Смотреть позже</span>
+                </div>
+                <div class="sidebar-item">
+                    <i class="fas fa-thumbs-up"></i>
+                    <span>Понравившиеся</span>
+                </div>
+                <div class="sidebar-item">
+                    <i class="fas fa-video"></i>
+                    <span>Ваши видео</span>
+                </div>
+                <div class="sidebar-item">
+                    <i class="fas fa-download"></i>
+                    <span>Скачанные</span>
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="sidebar-title">
+                    <span>Развернуть</span>
+                    <i class="fas fa-chevron-down" style="font-size: 12px;"></i>
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="sidebar-title" style="border: none; padding-top: 0;">
+                    <span>Навигатор</span>
+                </div>
+                <div class="sidebar-item">
+                    <i class="fas fa-fire"></i>
+                    <span>Музыка</span>
+                </div>
+                <div class="sidebar-item">
+                    <i class="fas fa-film"></i>
+                    <span>Фильмы</span>
+                </div>
+                <div class="sidebar-item">
+                    <i class="fas fa-gamepad"></i>
+                    <span>Видеоигры</span>
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="sidebar-title">
+                    <span>Развернуть</span>
+                    <i class="fas fa-chevron-down" style="font-size: 12px;"></i>
+                </div>
+            </div>
+
+            <div class="sidebar-section" style="border: none;">
+                <div class="sidebar-title" style="padding-top: 0;">
+                    <span>Другие возможности</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Content -->
+        <div class="content">
+            <!-- Category Pills -->
+            <div class="category-pills">
+                <div class="pill active">Все</div>
+                <div class="pill">Музыка</div>
+                <div class="pill">Видеоигры</div>
+                <div class="pill">Джемы</div>
+                <div class="pill">Сейчас в эфире</div>
+                <div class="pill">Minecraft</div>
+                <div class="pill">Недавно опубликованные</div>
+                <div class="pill">Просмотрено</div>
+                <div class="pill">Новое для вас</div>
+            </div>
+
+            <!-- Video Grid -->
+            <div class="video-grid">
+                <!-- Video 1 -->
+                <div class="video-card">
+                    <div class="video-thumbnail">
+                        <img src="https://images.unsplash.com/photo-1614850715649-1d0106293bd1?w=600&h=340&fit=crop" alt="SCP ambient">
+                        <div class="video-duration">3:28:36</div>
+                    </div>
+                    <div class="video-info">
+                        <div class="channel-avatar" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);"></div>
+                        <div class="video-details">
+                            <div class="video-title">an SCP ambient playlist</div>
+                            <div class="video-channel">
+                                Zerofuturism
+                                <i class="fas fa-check-circle verified-badge"></i>
+                            </div>
+                            <div class="video-meta">6,1 тыс. просмотров • 1 месяц назад</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Video 2 -->
+                <div class="video-card">
+                    <div class="video-thumbnail">
+                        <img src="https://images.unsplash.com/photo-1504803900752-c2051699d0e8?w=600&h=340&fit=crop" alt="Chernobyl ambient">
+                        <div class="video-duration">3:00:00</div>
+                    </div>
+                    <div class="video-info">
+                        <div class="channel-avatar" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);"></div>
+                        <div class="video-details">
+                            <div class="video-title">Rainy Day In The Zone | Ambient sounds of the chernobyl exclusion zone | S.T.A.L.K.E.R Anomaly #rain</div>
+                            <div class="video-channel">
+                                AmbientCore
+                            </div>
+                            <div class="video-meta">58 тыс. просмотров • 4 года назад</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Video 3 -->
+                <div class="video-card">
+                    <div class="video-thumbnail">
+                        <img src="https://images.unsplash.com/photo-1587620962725-abab7fe55159?w=600&h=340&fit=crop" alt="Minecraft">
+                        <div class="video-duration">4:01:42</div>
+                    </div>
+                    <div class="video-info">
+                        <div class="channel-avatar" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);"></div>
+                        <div class="video-details">
+                            <div class="video-title">i hope you are happy</div>
+                            <div class="video-channel">
+                                Huy Le
+                            </div>
+                            <div class="video-meta">558 просмотров • 9 часов назад</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Video 4 -->
+                <div class="video-card">
+                    <div class="video-thumbnail">
+                        <img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=600&h=340&fit=crop" alt="Study">
+                        <div class="live-indicator">В ЭФИРЕ</div>
+                    </div>
+                    <div class="video-info">
+                        <div class="channel-avatar" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);"></div>
+                        <div class="video-details">
+                            <div class="video-title">study with me live pomodoro!</div>
+                            <div class="video-channel">
+                                james vinh scholz
+                                <i class="fas fa-check-circle verified-badge"></i>
+                            </div>
+                            <div class="video-meta">Зрителей: 878</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Video 5 -->
+                <div class="video-card">
+                    <div class="video-thumbnail">
+                        <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=600&h=340&fit=crop" alt="Vapor">
+                        <div class="video-duration">1:46:24</div>
+                    </div>
+                    <div class="video-info">
+                        <div class="channel-avatar" style="background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);"></div>
+                        <div class="video-details">
+                            <div class="video-title">☁️ fading_into_you.mp4 • vapor & chill playlist</div>
+                            <div class="video-channel">
+                                monceel
+                            </div>
+                            <div class="video-meta">122 просмотра • 1 день назад</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Video 6 -->
+                <div class="video-card">
+                    <div class="video-thumbnail">
+                        <img src="https://images.unsplash.com/photo-1511379938547-c1f69419868d?w=600&h=340&fit=crop" alt="Chill">
+                        <div class="video-duration">1:00:01</div>
+                    </div>
+                    <div class="video-info">
+                        <div class="channel-avatar" style="background: linear-gradient(135deg, #30cfd0 0%, #330867 100%);"></div>
+                        <div class="video-details">
+                            <div class="video-title">Chill Bones Playlist | Best TeamSESH Tracks to Vibe & Relax To</div>
+                            <div class="video-channel">
+                                SeshRadioFM
+                            </div>
+                            <div class="video-meta">9,8 тыс. просмотров • 3 месяца назад</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Video 7 -->
+                <div class="video-card">
+                    <div class="video-thumbnail">
+                        <img src="https://images.unsplash.com/photo-1492619375914-88005aa9e8fb?w=600&h=340&fit=crop" alt="Coffee">
+                        <div class="video-duration">2:15:33</div>
+                    </div>
+                    <div class="video-info">
+                        <div class="channel-avatar" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);"></div>
+                        <div class="video-details">
+                            <div class="video-title">Morning Coffee Jazz ☕ Smooth Jazz Music & Bossa Nova for Good Mood</div>
+                            <div class="video-channel">
+                                Cozy Coffee Shop
+                            </div>
+                            <div class="video-meta">2,3 млн просмотров • 2 месяца назад</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Video 8 -->
+                <div class="video-card">
+                    <div class="video-thumbnail">
+                        <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=600&h=340&fit=crop" alt="City">
+                        <div class="video-duration">8:45:12</div>
+                    </div>
+                    <div class="video-info">
+                        <div class="channel-avatar" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);"></div>
+                        <div class="video-details">
+                            <div class="video-title">Cyberpunk 2077 Radio Mix - Electro, Industrial, Darksynth</div>
+                            <div class="video-channel">
+                                Night City Radio
+                            </div>
+                            <div class="video-meta">1,5 млн просмотров • 6 месяцев назад</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Video 9 -->
+                <div class="video-card">
+                    <div class="video-thumbnail">
+                        <img src="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=600&h=340&fit=crop" alt="Headphones">
+                        <div class="video-duration">3:33:21</div>
+                    </div>
+                    <div class="video-info">
+                        <div class="channel-avatar" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);"></div>
+                        <div class="video-details">
+                            <div class="video-title">Deep Focus Music To Improve Concentration - 12 Hours of Ambient Study Music</div>
+                            <div class="video-channel">
+                                Peaceful Relaxation
+                                <i class="fas fa-check-circle verified-badge"></i>
+                            </div>
+                            <div class="video-meta">45 млн просмотров • 1 год назад</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

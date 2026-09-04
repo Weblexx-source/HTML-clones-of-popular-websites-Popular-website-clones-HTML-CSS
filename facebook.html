@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Facebook</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: #18191a;
+            color: #e4e6eb;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            background: #242526;
+            height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 16px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            border-bottom: 1px solid #3e4042;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .fb-logo {
+            width: 40px;
+            height: 40px;
+            background: #0866ff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .search-box {
+            background: #3a3b3c;
+            border-radius: 50px;
+            padding: 8px 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            width: 240px;
+        }
+
+        .search-box input {
+            background: transparent;
+            border: none;
+            outline: none;
+            color: #b0b3b8;
+            font-size: 15px;
+            width: 100%;
+        }
+
+        .search-box input::placeholder {
+            color: #b0b3b8;
+        }
+
+        .search-icon {
+            width: 16px;
+            height: 16px;
+            color: #b0b3b8;
+        }
+
+        .header-center {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            max-width: 600px;
+        }
+
+        .nav-item {
+            width: 112px;
+            height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            position: relative;
+            transition: background 0.2s;
+            border-radius: 8px;
+        }
+
+        .nav-item:hover {
+            background: #3a3b3c;
+        }
+
+        .nav-item.active {
+            color: #0866ff;
+        }
+
+        .nav-item.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: #0866ff;
+        }
+
+        .nav-item svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .icon-button {
+            width: 40px;
+            height: 40px;
+            background: #3a3b3c;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .icon-button:hover {
+            background: #4e4f50;
+        }
+
+        .icon-button svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .profile-button {
+            background: #18191a;
+            border: 2px solid transparent;
+        }
+
+        /* Main Layout */
+        .main-layout {
+            display: flex;
+            margin-top: 56px;
+            min-height: calc(100vh - 56px);
+        }
+
+        /* Left Sidebar */
+        .left-sidebar {
+            width: 360px;
+            padding: 16px 8px;
+            position: fixed;
+            left: 0;
+            top: 56px;
+            bottom: 0;
+            overflow-y: auto;
+        }
+
+        .left-sidebar::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .left-sidebar::-webkit-scrollbar-thumb {
+            background: #4e4f50;
+            border-radius: 4px;
+        }
+
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+            color: #e4e6eb;
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 500;
+        }
+
+        .sidebar-item:hover {
+            background: #3a3b3c;
+        }
+
+        .sidebar-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .sidebar-icon img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .sidebar-icon.icon-bg {
+            background: #3a3b3c;
+        }
+
+        .sidebar-icon svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .sidebar-divider {
+            height: 1px;
+            background: #3e4042;
+            margin: 8px 0;
+        }
+
+        /* Center Feed */
+        .center-feed {
+            flex: 1;
+            max-width: 680px;
+            margin: 0 auto;
+            padding: 16px 0;
+        }
+
+        /* Story Creator */
+        .story-creator {
+            background: #242526;
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin-bottom: 16px;
+        }
+
+        .story-input {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .story-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .story-input input {
+            flex: 1;
+            background: #3a3b3c;
+            border: none;
+            border-radius: 50px;
+            padding: 12px 16px;
+            color: #b0b3b8;
+            font-size: 15px;
+            outline: none;
+        }
+
+        .story-input input::placeholder {
+            color: #b0b3b8;
+        }
+
+        .story-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .story-action-btn {
+            background: transparent;
+            border: none;
+            color: #e4e6eb;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 8px;
+            transition: background 0.2s;
+        }
+
+        .story-action-btn:hover {
+            background: #3a3b3c;
+        }
+
+        .story-divider {
+            height: 1px;
+            background: #3e4042;
+            margin: 12px 0;
+        }
+
+        .create-story-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px;
+            background: transparent;
+            border: none;
+            color: #e4e6eb;
+            font-size: 15px;
+            font-weight: 500;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+            width: 100%;
+        }
+
+        .create-story-btn:hover {
+            background: #3a3b3c;
+        }
+
+        .create-story-icon {
+            width: 40px;
+            height: 40px;
+            background: #0866ff;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .create-story-icon svg {
+            width: 20px;
+            height: 20px;
+            color: white;
+        }
+
+        /* Post Card */
+        .post-card {
+            background: #242526;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            overflow: hidden;
+        }
+
+        .post-header {
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .post-author {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .post-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .post-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .post-name {
+            font-size: 15px;
+            font-weight: 600;
+            color: #e4e6eb;
+        }
+
+        .post-name a {
+            color: #4599ff;
+            text-decoration: none;
+        }
+
+        .post-meta {
+            font-size: 13px;
+            color: #b0b3b8;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .post-actions-header {
+            display: flex;
+            gap: 4px;
+        }
+
+        .post-action-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .post-action-icon:hover {
+            background: #3a3b3c;
+        }
+
+        .post-action-icon svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .post-title {
+            padding: 0 16px 12px;
+            font-size: 15px;
+            color: #e4e6eb;
+        }
+
+        .post-image {
+            width: 100%;
+            display: block;
+            background: #000;
+        }
+
+        .post-footer {
+            padding: 12px 16px;
+        }
+
+        .post-3d-text {
+            text-align: center;
+            padding: 12px;
+            font-size: 13px;
+            color: #e4e6eb;
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        /* Right Sidebar */
+        .right-sidebar {
+            width: 360px;
+            padding: 16px;
+            position: fixed;
+            right: 0;
+            top: 56px;
+            bottom: 0;
+            overflow-y: auto;
+        }
+
+        .right-sidebar::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .right-sidebar::-webkit-scrollbar-thumb {
+            background: #4e4f50;
+            border-radius: 4px;
+        }
+
+        .sidebar-section-title {
+            font-size: 17px;
+            font-weight: 600;
+            color: #b0b3b8;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .create-group-chat {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin-bottom: 8px;
+        }
+
+        .create-group-chat:hover {
+            background: #3a3b3c;
+        }
+
+        .create-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #3a3b3c;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .create-icon svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        /* Footer */
+        .footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #242526;
+            padding: 12px 16px;
+            font-size: 12px;
+            color: #b0b3b8;
+            text-align: center;
+            border-top: 1px solid #3e4042;
+        }
+
+        .footer a {
+            color: #b0b3b8;
+            text-decoration: none;
+            margin: 0 4px;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        .edit-icon {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 56px;
+            height: 56px;
+            background: #0866ff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(8, 102, 255, 0.4);
+            transition: all 0.2s;
+        }
+
+        .edit-icon:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 16px rgba(8, 102, 255, 0.5);
+        }
+
+        .edit-icon svg {
+            width: 24px;
+            height: 24px;
+            color: white;
+        }
+
+        @media (max-width: 1100px) {
+            .left-sidebar {
+                width: 280px;
+            }
+            .right-sidebar {
+                display: none;
+            }
+        }
+
+        @media (max-width: 900px) {
+            .left-sidebar {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-left">
+            <div class="fb-logo">f</div>
+            <div class="search-box">
+                <svg class="search-icon" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                </svg>
+                <input type="text" placeholder="Поиск на Facebook">
+            </div>
+        </div>
+
+        <nav class="header-center">
+            <div class="nav-item active">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M9.464 1.286C10.294.803 11.092.5 12 .5c.908 0 1.707.303 2.537.786.795.462 1.7 1.142 2.815 1.977l2.232 1.675c1.391 1.042 2.359 1.766 2.888 2.826.53 1.059.53 2.268.528 4.006v4.3c0 1.355 0 2.471-.119 3.355-.124.928-.396 1.747-1.052 2.403-.657.657-1.476.928-2.404 1.053-.884.119-2 .119-3.354.119H7.93c-1.354 0-2.471 0-3.355-.119-.928-.125-1.747-.396-2.403-1.053-.656-.656-.928-1.475-1.053-2.403C1 18.541 1 17.425 1 16.07v-4.3c0-1.738-.002-2.947.528-4.006.53-1.06 1.497-1.784 2.888-2.826L6.65 3.263c1.114-.835 2.02-1.515 2.815-1.977zM10.5 13A1.5 1.5 0 0 0 9 14.5V21h6v-6.5a1.5 1.5 0 0 0-1.5-1.5h-3z"/>
+                </svg>
+            </div>
+            <div class="nav-item">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M15.5 8.5a1 1 0 0 0-1-1h-1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1h1a1 1 0 0 0 1-1v-1zm6 0a1 1 0 0 0-1-1h-1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1h1a1 1 0 0 0 1-1v-1zm-12 0a1 1 0 0 0-1-1h-1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1h1a1 1 0 0 0 1-1v-1zm12 6a1 1 0 0 0-1-1h-1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1h1a1 1 0 0 0 1-1v-1zm-6 0a1 1 0 0 0-1-1h-1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1h1a1 1 0 0 0 1-1v-1zm-6 0a1 1 0 0 0-1-1h-1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1h1a1 1 0 0 0 1-1v-1zm16.5-9.5v12a3 3 0 0 1-3 3h-18a3 3 0 0 1-3-3v-12a3 3 0 0 1 3-3h18a3 3 0 0 1 3 3z"/>
+                </svg>
+            </div>
+            <div class="nav-item">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 6a4 4 0 0 0-4 4c0 1.256.549 2.4 1.43 3.165L12 16l2.57-2.835A3.99 3.99 0 0 0 16 10a4 4 0 0 0-4-4zm0-4a8 8 0 0 1 8 8c0 2.59-1.215 5.019-3.268 6.928L12 22l-4.732-5.072C5.215 15.019 4 12.59 4 10a8 8 0 0 1 8-8z"/>
+                </svg>
+            </div>
+            <div class="nav-item">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M6 3a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3h12a3 3 0 0 0 3-3V6a3 3 0 0 0-3-3H6zm4 4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1V7zm-4 4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v6a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1v-6zm10 0a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v6a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1v-6z"/>
+                </svg>
+            </div>
+            <div class="nav-item">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2a5 5 0 1 0 0 10 5 5 0 0 0 0-10zm-4 13a4 4 0 0 0-4 4v1a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-1a4 4 0 0 0-4-4h-8z"/>
+                </svg>
+            </div>
+        </nav>
+
+        <div class="header-right">
+            <div class="icon-button">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M3 3h18v2H3V3zm0 8h12v2H3v-2zm0 8h18v2H3v-2z"/>
+                </svg>
+            </div>
+            <div class="icon-button">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                </svg>
+            </div>
+            <div class="icon-button">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 22c1.1 0 2-.9 2-2h-4a2 2 0 0 0 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/>
+                </svg>
+            </div>
+            <div class="icon-button profile-button">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                    <circle cx="12" cy="12" r="10" fill="#667eea"/>
+                </svg>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Layout -->
+    <div class="main-layout">
+        <!-- Left Sidebar -->
+        <aside class="left-sidebar">
+            <div class="sidebar-item">
+                <div class="sidebar-icon">
+                    <img src="data:image/svg+xml,%3Csvg viewBox='0 0 36 36' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='18' cy='18' r='18' fill='%23667eea'/%3E%3C/svg%3E" alt="">
+                </div>
+                <span>Никита Чувашов</span>
+            </div>
+
+            <div class="sidebar-item">
+                <div class="sidebar-icon icon-bg">
+                    <svg viewBox="0 0 24 24" fill="#4599ff">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                    </svg>
+                </div>
+                <span>Друзья</span>
+            </div>
+
+            <div class="sidebar-item">
+                <div class="sidebar-icon icon-bg">
+                    <svg viewBox="0 0 24 24" fill="#ff6b6b">
+                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                    </svg>
+                </div>
+                <span>Воспоминания</span>
+            </div>
+
+            <div class="sidebar-item">
+                <div class="sidebar-icon icon-bg">
+                    <svg viewBox="0 0 24 24" fill="#9b59b6">
+                        <path d="M5 5h2v3h10V5h2v5h2V5c0-1.1-.9-2-2-2h-4.18C14.4 1.84 13.3 1 12 1s-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h6v-2H5V5zm7-2c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1z"/>
+                    <path d="M21 11.5L15.51 17l-3.01-3-1.5 1.5 4.51 4.5 6.99-7z"/>
+                </svg>
+                </div>
+                <span>Сохраненное</span>
+            </div>
+
+            <div class="sidebar-item">
+                <div class="sidebar-icon icon-bg">
+                    <svg viewBox="0 0 24 24" fill="#3498db">
+                        <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
+                </svg>
+                </div>
+                <span>Группы</span>
+            </div>
+
+            <div class="sidebar-item">
+                <div class="sidebar-icon icon-bg">
+                    <svg viewBox="0 0 24 24" fill="#e74c3c">
+                        <path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/>
+                    </svg>
+                </div>
+                <span>Видео Reels</span>
+            </div>
+
+            <div class="sidebar-item">
+                <div class="sidebar-icon icon-bg">
+                    <svg viewBox="0 0 24 24" fill="#3498db">
+                        <path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/>
+                    </svg>
+                </div>
+                <span>Marketplace</span>
+            </div>
+
+            <div class="sidebar-item">
+                <div class="sidebar-icon icon-bg">
+                    <svg viewBox="0 0 24 24" fill="#f39c12">
+                        <path d="M21.41 11.58l-9-9C12.05 2.22 11.55 2 11 2H4c-1.1 0-2 .9-2 2v7c0 .55.22 1.05.59 1.42l9 9c.36.36.86.58 1.41.58.55 0 1.05-.22 1.41-.59l7-7c.37-.36.59-.86.59-1.41 0-.55-.23-1.06-.59-1.42zM5.5 7C4.67 7 4 6.33 4 5.5S4.67 4 5.5 4 7 4.67 7 5.5 6.33 7 5.5 7z"/>
+                </svg>
+                </div>
+                <span>Ленты</span>
+            </div>
+
+            <div class="sidebar-item">
+                <div class="sidebar-icon icon-bg">
+                    <svg viewBox="0 0 24 24" fill="#e74c3c">
+                        <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/>
+                    </svg>
+                </div>
+                <span>Мероприятия</span>
+            </div>
+
+            <div class="sidebar-item">
+                <div class="sidebar-icon icon-bg">
+                    <svg viewBox="0 0 24 24" fill="#3498db">
+                        <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>
+                    </svg>
+                </div>
+                <span>Ads Manager</span>
+            </div>
+
+            <div class="sidebar-item">
+                <div class="sidebar-icon icon-bg">
+                    <svg viewBox="0 0 24 24" fill="#9b59b6">
+                        <path d="M21.58 7.19c-.23-.86-.91-1.54-1.77-1.77C18.25 5 12 5 12 5s-6.25 0-7.81.42c-.86.23-1.54.91-1.77 1.77C2 8.75 2 12 2 12s0 3.25.42 4.81c.23.86.91 1.54 1.77 1.77C5.75 19 12 19 12 19s6.25 0 7.81-.42c.86-.23 1.54-.91 1.77-1.77C22 15.25 22 12 22 12s0-3.25-.42-4.81zM10 15V9l5.2 3-5.2 3z"/>
+                    </svg>
+                </div>
+                <span>Игры</span>
+            </div>
+
+            <div class="sidebar-divider"></div>
+
+            <div class="sidebar-item">
+                <div class="sidebar-icon icon-bg">
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/>
+                    </svg>
+                </div>
+                <span>Показать больше</span>
+            </div>
+        </aside>
+
+        <!-- Center Feed -->
+        <main class="center-feed">
+            <!-- Story Creator -->
+            <div class="story-creator">
+                <div class="story-input">
+                    <div class="story-avatar"></div>
+                    <input type="text" placeholder="Что у вас нового, Никита?">
+                    <div class="story-actions">
+                        <button class="story-action-btn">
+                            <svg viewBox="0 0 24 24" width="24" height="24" fill="#f3425f">
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 14c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4z"/>
+                            </svg>
+                        </button>
+                        <button class="story-action-btn">
+                            <svg viewBox="0 0 24 24" width="24" height="24" fill="#45bd62">
+                                <path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/>
+                            </svg>
+                        </button>
+                        <button class="story-action-btn">
+                            <svg viewBox="0 0 24 24" width="24" height="24" fill="#f7b928">
+                                <circle cx="15.5" cy="9.5" r="1.5"/>
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8 0-.29.02-.58.05-.86 2.36-1.05 4.23-2.98 5.21-5.37C11.07 8.33 14.05 10 17.42 10c.78 0 1.53-.09 2.25-.26.21.71.33 1.47.33 2.26 0 4.41-3.59 8-8 8z"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                <div class="story-divider"></div>
+                <button class="create-story-btn">
+                    <div class="create-story-icon">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <div style="font-weight: 600;">Создать историю</div>
+                        <div style="font-size: 13px; color: #b0b3b8;">Поделитесь фото или напишите что-нибудь.</div>
+                    </div>
+                </button>
+            </div>
+
+            <!-- Post -->
+            <div class="post-card">
+                <div class="post-header">
+                    <div class="post-author">
+                        <div class="post-avatar"></div>
+                        <div class="post-info">
+                            <div class="post-name">Caiuca · <a href="#">Подписаться</a></div>
+                            <div class="post-meta">
+                                14 ч. ·
+                                <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor">
+                                    <path d="M6 0a6 6 0 1 0 0 12A6 6 0 0 0 6 0z"/>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="post-actions-header">
+                        <div class="post-action-icon">
+                            <svg viewBox="0 0 24 24" fill="currentColor">
+                                <circle cx="12" cy="12" r="2"/>
+                                <circle cx="12" cy="5" r="2"/>
+                                <circle cx="12" cy="19" r="2"/>
+                            </svg>
+                        </div>
+                        <div class="post-action-icon">
+                            <svg viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                <div class="post-title">Dreamtide</div>
+                <img src="data:image/svg+xml,%3Csvg width='600' height='800' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3ClinearGradient id='grad1' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%237c3aed;stop-opacity:1' /%3E%3Cstop offset='25%25' style='stop-color:%23a855f7;stop-opacity:1' /%3E%3Cstop offset='50%25' style='stop-color:%23ec4899;stop-opacity:1' /%3E%3Cstop offset='75%25' style='stop-color:%23f472b6;stop-opacity:1' /%3E%3Cstop offset='100%25' style='stop-color:%23fb7185;stop-opacity:1' /%3E%3C/linearGradient%3E%3CradialGradient id='moon' cx='50%25' cy='50%25' r='50%25'%3E%3Cstop offset='0%25' style='stop-color:%23f8fafc;stop-opacity:1' /%3E%3Cstop offset='80%25' style='stop-color:%23cbd5e1;stop-opacity:1' /%3E%3Cstop offset='100%25' style='stop-color:%2394a3b8;stop-opacity:1' /%3E%3C/radialGradient%3E%3C/defs%3E%3Crect width='600' height='800' fill='url(%23grad1)'/%3E%3Cpath d='M0 600 Q150 550 300 600 T600 600 L600 800 L0 800 Z' fill='%234ade80' opacity='0.4'/%3E%3Cpath d='M0 650 Q150 620 300 650 T600 650 L600 800 L0 800 Z' fill='%2322d3ee' opacity='0.5'/%3E%3Cpath d='M0 700 Q150 680 300 700 T600 700 L600 800 L0 800 Z' fill='%233b82f6' opacity='0.6'/%3E%3Ccircle cx='300' cy='280' r='80' fill='url(%23moon)'/%3E%3Cellipse cx='300' cy='280' rx='70' ry='75' fill='none' stroke='%23a855f7' stroke-width='2' opacity='0.6'/%3E%3Cellipse cx='300' cy='280' rx='90' ry='85' fill='none' stroke='%23ec4899' stroke-width='1.5' opacity='0.5'/%3E%3Cpath d='M250 200 Q280 180 310 200' stroke='%23f472b6' stroke-width='2' fill='none' opacity='0.7'/%3E%3Cpath d='M200 250 Q230 230 260 250' stroke='%23fb7185' stroke-width='2' fill='none' opacity='0.7'/%3E%3Cpath d='M340 250 Q370 230 400 250' stroke='%23a855f7' stroke-width='2' fill='none' opacity='0.7'/%3E%3C/svg%3E" alt="Dreamtide" class="post-image">
+                <div class="post-3d-text">Перемещайте мышь для просмотра фото в 3D</div>
+            </div>
+        </main>
+
+        <!-- Right Sidebar -->
+        <aside class="right-sidebar">
+            <div class="sidebar-section-title">
+                Групповые чаты
+            </div>
+            <div class="create-group-chat">
+                <div class="create-icon">
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+                    </svg>
+                </div>
+                <span>Создать групповой чат</span>
+            </div>
+        </aside>
+    </div>
+
+    <!-- Floating Edit Button -->
+    <div class="edit-icon">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a.996.996 0 0 0 0-1.41l-2.34-2.34a.996.996 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
+        </svg>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer" style="display: none;">
+        <a href="#">Конфиденциальность</a> ·
+        <a href="#">Условия использования</a> ·
+        <a href="#">Реклама</a> ·
+        <a href="#">Рекламные предпочтения</a> ·
+        <a href="#">Файлы cookie</a> ·
+        <a href="#">Ещё</a>
+    </div>
+</body>
+</html>
